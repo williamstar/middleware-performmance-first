@@ -16,7 +16,8 @@ public class MessagePushConsumer implements Serializable {
 
     public void start(MessageListener listener) throws Exception {
         consumer = (DefaultMQPushConsumer) MessageConsumerManager.getConsumerInstance(listener);
-        new Thread(new SupervisorThread(consumer)).start();	//	监视线程
+        new SupervisorThread(consumer).TimeWork();	//	监视线程
+        SupervisorThread.timeEmit();
         this.consumer.start();
     }
 

@@ -81,7 +81,7 @@ public class TairImpl {
     	PCSUM += StructUtils.PCDeal[index];
     	MOBILESUM += StructUtils.mobileDeal[index];
     	double result =  MOBILESUM / PCSUM;
-    	LOG.info("@@@@@@"+RaceConfig.prex_ratio + millisTime+"----->"+result);
+    	LOG.info(index+"@@@@@@@@@@@@@@@@@@@"+RaceConfig.prex_ratio + millisTime+"----->"+result);
 //       	try {
 //       		RandomAccessFile raf = new RandomAccessFile(file,"rw");
 //       		raf.seek(raf.length());
@@ -96,7 +96,7 @@ public class TairImpl {
     private static boolean writeTaobao(int index,long millisTime) {
     	
     	double result = StructUtils.taobaoDeal[index];
-    	LOG.info("@@@@@@"+RaceConfig.prex_taobao + millisTime+"----->"+result);
+    	LOG.info(index+"@@@@@@@@@@@@@@@@@@@"+RaceConfig.prex_taobao + millisTime+"----->"+result);
       //	System.err.println("@@@writeTaobao@@@  "+index+"  ,  "+ result);
 //       	try {
 //       		RandomAccessFile raf = new RandomAccessFile(file,"rw");
@@ -111,7 +111,7 @@ public class TairImpl {
     
     private static boolean writeTmall(int index,long millisTime) {
     	double result = StructUtils.tmallDeal[index];
-    	LOG.info("@@@@@@"+RaceConfig.prex_tmall + millisTime+"----->"+result);
+    	LOG.info(index+"@@@@@@@@@@@@@@@@@@@"+RaceConfig.prex_tmall + millisTime+"----->"+result);
       //	System.err.println("@@@writeTmall@@@  "+index+"  ,  "+result);
 //       	try {
 //      		RandomAccessFile raf = new RandomAccessFile(file,"rw");
@@ -134,6 +134,6 @@ public class TairImpl {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-    	Log.error("Fail Times  ---------------->:"+(++failTimes)+typ);
+    	Log.info("Fail Times  ************************************ >:"+(++failTimes)+typ);
     }
 }

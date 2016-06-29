@@ -1,7 +1,6 @@
 package com.alibaba.middleware.race.jstorm;
 
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.tuple.Fields;
@@ -33,14 +32,14 @@ public class RaceTopology {
 		Config conf = new Config();
 		TopologyBuilder builder = new TopologyBuilder();
 		builder.setSpout("spout", new MQSpout(),1);
-		builder.setBolt("taoSortBolt", new TaoSortBolt(),8).localOrShuffleGrouping("spout", TopologyUtils.TAOBAO_TOPIC_STREAM);
-		builder.setBolt("tmallSortBolt", new TmallSortBolt(),8).localOrShuffleGrouping("spout", TopologyUtils.TMALL_TOPIC_STREAM);
-		builder.setBolt("paySortBolt", new PaySortBolt(),12).localOrShuffleGrouping("spout", TopologyUtils.PAY_TOPIC_STREAM);
+		builder.setBolt("taoSortBolt", new TaoSortBolt(),3).localOrShuffleGrouping("spout", TopologyUtils.TAOBAO_TOPIC_STREAM);
+		builder.setBolt("tmallSortBolt", new TmallSortBolt(),3).localOrShuffleGrouping("spout", TopologyUtils.TMALL_TOPIC_STREAM);
+		builder.setBolt("paySortBolt", new PaySortBolt(),6).localOrShuffleGrouping("spout", TopologyUtils.PAY_TOPIC_STREAM);
 	
-		builder.setBolt("taoCountBolt", new TaoCountBolt(),4).fieldsGrouping ("paySortBolt", TopologyUtils.TAOBAO_SORT_STREAM,new Fields("index"));
-		builder.setBolt("tmallCountBolt", new TmallCountBolt(),4).fieldsGrouping("paySortBolt", TopologyUtils.TMALL_SORT_STREAM,new Fields("index"));
-		builder.setBolt("PCCountBolt", new PCCountBolt(),4).fieldsGrouping("paySortBolt", TopologyUtils.PC_SORT_STREAM,new Fields("index"));
-		builder.setBolt("MobileCountBolt", new MobileCountBolt(),4).fieldsGrouping("paySortBolt", TopologyUtils.MOBILE_SORT_STREAM,new Fields("index"));
+		builder.setBolt("taoCountBolt", new TaoCountBolt(),3).fieldsGrouping ("paySortBolt", TopologyUtils.TAOBAO_SORT_STREAM,new Fields("index"));
+		builder.setBolt("tmallCountBolt", new TmallCountBolt(),3).fieldsGrouping("paySortBolt", TopologyUtils.TMALL_SORT_STREAM,new Fields("index"));
+		builder.setBolt("PCCountBolt", new PCCountBolt(),3).fieldsGrouping("paySortBolt", TopologyUtils.PC_SORT_STREAM,new Fields("index"));
+		builder.setBolt("MobileCountBolt", new MobileCountBolt(),3).fieldsGrouping("paySortBolt", TopologyUtils.MOBILE_SORT_STREAM,new Fields("index"));
 		
 		String topologyName = RaceConfig.JstormTopologyName;
 		conf.setDebug(false);
@@ -55,6 +54,6 @@ public class RaceTopology {
 		conf.put(Config.STORM_CLUSTER_MODE, "distributed");
 		conf.setNumWorkers(3);
         StormSubmitter.submitTopology(topologyName, conf,builder.createTopology());
-        
+        LOG.info("#################拓扑提交成功！###################");
 	}
 }

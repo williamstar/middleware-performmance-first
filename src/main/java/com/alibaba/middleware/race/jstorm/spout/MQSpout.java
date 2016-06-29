@@ -50,7 +50,7 @@ public class MQSpout implements IRichSpout, IFailValueSpout, MessageListenerOrde
 	}
 
 	public void nextTuple() {
-		Utils.sleep(1000000);
+		Utils.sleep(100000);
 	}
 
 	public void ack(Object id) {
@@ -91,18 +91,14 @@ public class MQSpout implements IRichSpout, IFailValueSpout, MessageListenerOrde
 			}
 			String msgId = msg.getMsgId();
 			if (msg.getTopic().equals(RaceConfig.MqPayTopic)) {
-				//System.out.println("开始发射pay消息" + emitPayment++);
 				emitPayment++;
 				collector.emit(TopologyUtils.PAY_TOPIC_STREAM, new Values(body), "pay" + msgId);
 
 			} else if (msg.getTopic().equals(RaceConfig.MqTaobaoTradeTopic)) {
-				// System.out.println("开始发射淘寶消息" + emitTaobao++);
 				collector.emit(TopologyUtils.TAOBAO_TOPIC_STREAM, new Values(body), "tao" + msgId);
 
 			} else if (msg.getTopic().equals(RaceConfig.MqTmallTradeTopic)) {
-				// System.out.println("开始发射天貓消息" + emitTmall++);
 				collector.emit(TopologyUtils.TMALL_TOPIC_STREAM, new Values(body), "tmall" + msgId);
-
 			}
 
 		}
@@ -111,7 +107,7 @@ public class MQSpout implements IRichSpout, IFailValueSpout, MessageListenerOrde
 	}
 
 	// 提交全部统计结果
-	private void submitFinalMsg() {
+	public static void submitFinalMsg() {
 		new Thread() {
 			public void run() {
 				try {

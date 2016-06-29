@@ -5,9 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class StructUtils {
-	//50W:100000,60000
-	public static final int UPPER_BOUNDER =150000;
-	public static final int LOWER_BOUNDER = 100000;
+	//限流
+	public static final int TMALL_UPPER_BOUNDER =400000;
+	public static final int TAOBAO_UPPER_BOUNDER =400000;
+	public static final int TMALL_LOWER_BOUNDER = 100000;
+	public static final int TAOBAO_LOWER_BOUNDER = 100000;
+	public static final int LOWER_BOUNDER = 150000;
+	
 	//缓存结构	orderid : payAmount
 	public static ConcurrentHashMap<Long,Double> taobaoCacheMap= new ConcurrentHashMap<Long,Double>();
 	public static ConcurrentHashMap<Long,Double> tmallCacheMap = new ConcurrentHashMap<Long,Double>();
