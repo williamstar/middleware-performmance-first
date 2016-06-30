@@ -2,8 +2,6 @@ package com.alibaba.middleware.race.jstorm;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.middleware.race.SupervisorThread;
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -16,6 +14,8 @@ public class MessagePushConsumer implements Serializable {
 
     public void start(MessageListener listener) throws Exception {
         consumer = (DefaultMQPushConsumer) MessageConsumerManager.getConsumerInstance(listener);
+//        consumer.setConsumeMessageBatchMaxSize(64);
+//        consumer.setConsumeThreadMax(4);
         new SupervisorThread(consumer).TimeWork();	//	监视线程
         SupervisorThread.timeEmit();
         this.consumer.start();

@@ -5,8 +5,6 @@ import java.util.Map;
 
 import com.alibaba.middleware.race.StructUtils;
 import com.alibaba.middleware.race.TopologyUtils;
-
-import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.BasicOutputCollector;
 import backtype.storm.topology.IBasicBolt;

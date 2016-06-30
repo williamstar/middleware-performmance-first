@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.jstorm.client.spout.IFailValueSpout;
 import com.alibaba.middleware.race.RaceConfig;
 import com.alibaba.middleware.race.StructUtils;
+import com.alibaba.middleware.race.SupervisorThread;
 import com.alibaba.middleware.race.TopologyUtils;
 import com.alibaba.middleware.race.Tair.TairImpl;
 import com.alibaba.middleware.race.jstorm.MessagePushConsumer;
@@ -50,7 +51,7 @@ public class MQSpout implements IRichSpout, IFailValueSpout, MessageListenerOrde
 	}
 
 	public void nextTuple() {
-		Utils.sleep(100000);
+		Utils.sleep(1000000);
 	}
 
 	public void ack(Object id) {
@@ -83,6 +84,7 @@ public class MQSpout implements IRichSpout, IFailValueSpout, MessageListenerOrde
 			byte[] body = msg.getBody();
 			if (body.length == 2 && body[0] == 0 && body[1] == 0) {
 				// 生产者停止生成数据, 并不意味着马上结束
+				SupervisorThread.isEnd = true;
 				endTime++;
 				if (endTime == 3) { // 当pay消费到最后时
 					submitFinalMsg();
@@ -92,13 +94,13 @@ public class MQSpout implements IRichSpout, IFailValueSpout, MessageListenerOrde
 			String msgId = msg.getMsgId();
 			if (msg.getTopic().equals(RaceConfig.MqPayTopic)) {
 				emitPayment++;
-				collector.emit(TopologyUtils.PAY_TOPIC_STREAM, new Values(body), "pay" + msgId);
+				collector.emit(TopologyUtils.PAY_TOPIC_STREAM, new Values(body));
 
 			} else if (msg.getTopic().equals(RaceConfig.MqTaobaoTradeTopic)) {
-				collector.emit(TopologyUtils.TAOBAO_TOPIC_STREAM, new Values(body), "tao" + msgId);
+				collector.emit(TopologyUtils.TAOBAO_TOPIC_STREAM, new Values(body));
 
 			} else if (msg.getTopic().equals(RaceConfig.MqTmallTradeTopic)) {
-				collector.emit(TopologyUtils.TMALL_TOPIC_STREAM, new Values(body), "tmall" + msgId);
+				collector.emit(TopologyUtils.TMALL_TOPIC_STREAM, new Values(body));
 			}
 
 		}
