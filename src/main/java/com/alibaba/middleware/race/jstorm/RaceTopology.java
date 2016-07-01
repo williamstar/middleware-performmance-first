@@ -2,8 +2,6 @@ package com.alibaba.middleware.race.jstorm;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.jstorm.utils.JStormUtils;
 import com.alibaba.middleware.race.RaceConfig;
 import com.alibaba.middleware.race.SupervisorThread;
 import com.alibaba.middleware.race.jstorm.bolt.PaySortBolt;
@@ -12,9 +10,8 @@ import com.alibaba.middleware.race.jstorm.bolt.TmallSortBolt;
 import com.alibaba.middleware.race.jstorm.spout.MQPayPullSpout;
 import com.alibaba.middleware.race.jstorm.spout.MQTaoPullSpout;
 import com.alibaba.middleware.race.jstorm.spout.MQTmallPullSpout;
-
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 
 
@@ -53,7 +50,7 @@ public class RaceTopology {
 		//集群模式
 		conf.put(Config.STORM_CLUSTER_MODE, "distributed");
 		conf.setNumWorkers(3);
-       StormSubmitter.submitTopology(topologyName, conf,builder.createTopology());
+		StormSubmitter.submitTopology(topologyName, conf,builder.createTopology());
         LOG.info("#################拓扑提交成功！###################");
 	}
 }
