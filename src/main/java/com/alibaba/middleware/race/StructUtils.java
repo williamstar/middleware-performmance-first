@@ -2,7 +2,7 @@ package com.alibaba.middleware.race;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class StructUtils {
 	//限流
@@ -13,8 +13,8 @@ public class StructUtils {
 	public static final int PAY_OPEN_BOUNDER = 80000;
 	public static final int PAY_CLOSE_BOUNDER = 50000;
 	//缓存结构	orderid : payAmount
-	public static HashMap<Long,Double> taobaoCacheMap= new HashMap<Long,Double>();
-	public static HashMap<Long,Double> tmallCacheMap = new HashMap<Long,Double>();
+	public static ConcurrentHashMap<Long,Double> taobaoCacheMap= new ConcurrentHashMap<Long,Double>();
+	public static ConcurrentHashMap<Long,Double> tmallCacheMap = new ConcurrentHashMap<Long,Double>();
 
 	//结果记录
 	public static double[] taobaoDeal = new double[1441];

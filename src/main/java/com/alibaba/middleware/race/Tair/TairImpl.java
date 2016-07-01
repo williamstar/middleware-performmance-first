@@ -1,5 +1,7 @@
 package com.alibaba.middleware.race.Tair;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.middleware.race.RaceConfig;
 import com.alibaba.middleware.race.StructUtils;
 import com.esotericsoftware.minlog.Log;
-import com.taobao.tair.ResultCode;
 import com.taobao.tair.impl.DefaultTairManager;
 
 /**
@@ -22,7 +23,7 @@ public class TairImpl {
 	private static Logger LOG = LoggerFactory.getLogger(TairImpl.class);
 	private static DefaultTairManager tairManager;
 	public static double PCSUM = 0,MOBILESUM = 0;
-//	public static File file;
+	public static File file;
 	public static int failTimes = 0;
 	 static {
     	
@@ -36,22 +37,23 @@ public class TairImpl {
     	// 设置组名
     	tairManager.setGroupName(RaceConfig.TairGroup);
     	// 初始化客户端
-    	tairManager.init();
-//		file = new File("/root/result.txt");
+//    	tairManager.init();
+		file = new File("/root/result.txt");
     }
     public static boolean write(Serializable key, Serializable value) {
-    	ResultCode rc = tairManager.put(RaceConfig.TairNamespace, key, value);
-    	if (rc.isSuccess()) {
-    	   return true;
-    	} else if (ResultCode.VERERROR.equals(rc)){
-    	    // 版本错误的处理代码
-    		Log.error("tair版本错误");
-    		   return false;
-    	} else {
-    	    // 其他失败的处理代码 
-    		Log.error("tair write失败");
-    		return false;
-    	}
+//    	ResultCode rc = tairManager.put(RaceConfig.TairNamespace, key, value);
+//    	if (rc.isSuccess()) {
+//    	   return true;
+//    	} else if (ResultCode.VERERROR.equals(rc)){
+//    	    // 版本错误的处理代码
+//    		Log.error("tair版本错误");
+//    		   return false;
+//    	} else {
+//    	    // 其他失败的处理代码 
+//    		Log.error("tair write失败");
+//    		return false;
+//    	}
+    	return true;
     }
     public static boolean writeAll(int index, long millisTime){
     	writeTaobao(index,millisTime);
@@ -83,14 +85,14 @@ public class TairImpl {
     	MOBILESUM += StructUtils.mobileDeal[index];
     	double result =  MOBILESUM / PCSUM;
     	LOG.info(index+"@@@@@@@@@@@@@@@@@@@"+RaceConfig.prex_ratio + millisTime+"----->"+result);
-//       	try {
-//       		RandomAccessFile raf = new RandomAccessFile(file,"rw");
-//       		raf.seek(raf.length());
-//       		raf.write((index+" -> key: "+RaceConfig.prex_ratio + millisTime+"  value: "+result+"\n").getBytes());
-//       		raf.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+       	try {
+       		RandomAccessFile raf = new RandomAccessFile(file,"rw");
+       		raf.seek(raf.length());
+       		raf.write((index+" -> key: "+RaceConfig.prex_ratio + millisTime+"  value: "+result+"\n").getBytes());
+       		raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     	return write( RaceConfig.prex_ratio + millisTime, result);
     }
     
@@ -98,43 +100,41 @@ public class TairImpl {
     	
     	double result = StructUtils.taobaoDeal[index];
     	LOG.info(index+"@@@@@@@@@@@@@@@@@@@"+RaceConfig.prex_taobao + millisTime+"----->"+result);
-      	System.err.println("@@@writeTaobao@@@  "+index+"  ,  "+ result);
-//       	try {
-//       		RandomAccessFile raf = new RandomAccessFile(file,"rw");
-//       		raf.seek(raf.length());
-//       		raf.write((index+" -> key: "+RaceConfig.prex_taobao + millisTime+"  value: "+result+"\n").getBytes());
-//       		raf.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+       	try {
+       		RandomAccessFile raf = new RandomAccessFile(file,"rw");
+       		raf.seek(raf.length());
+       		raf.write((index+" -> key: "+RaceConfig.prex_taobao + millisTime+"  value: "+result+"\n").getBytes());
+       		raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     	return write(RaceConfig.prex_taobao + millisTime, result);
     }
     
     private static boolean writeTmall(int index,long millisTime) {
     	double result = StructUtils.tmallDeal[index];
     	LOG.info(index+"@@@@@@@@@@@@@@@@@@@"+RaceConfig.prex_tmall + millisTime+"----->"+result);
-      	System.err.println("@@@writeTmall@@@  "+index+"  ,  "+result);
-//       	try {
-//      		RandomAccessFile raf = new RandomAccessFile(file,"rw");
-//       		raf.seek(raf.length());
-//       		raf.write((index+" -> key: "+RaceConfig.prex_tmall + millisTime+"  value: "+result+"\n").getBytes());
-//       		raf.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
+       	try {
+      		RandomAccessFile raf = new RandomAccessFile(file,"rw");
+       		raf.seek(raf.length());
+       		raf.write((index+" -> key: "+RaceConfig.prex_tmall + millisTime+"  value: "+result+"\n").getBytes());
+       		raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     	return write(RaceConfig.prex_tmall + millisTime, result);
     }
     
     public  static void writeFails(String typ){
     	RandomAccessFile raf;
-//		try {
-//			raf = new RandomAccessFile(file,"rw");
-//			raf.seek(raf.length());
-//			raf.write(("fail times =============>"+(++failTimes)+typ+"\n").getBytes());
-//			raf.close();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
+		try {
+			raf = new RandomAccessFile(file,"rw");
+			raf.seek(raf.length());
+			raf.write(("fail times =============>"+(++failTimes)+typ+"\n").getBytes());
+			raf.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     	Log.info("Fail Times  ************************************ >:"+(++failTimes)+typ);
     }
 }

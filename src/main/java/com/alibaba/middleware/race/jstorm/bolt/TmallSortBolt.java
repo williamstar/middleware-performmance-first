@@ -4,7 +4,6 @@ import java.util.Map;
 
 import com.alibaba.middleware.race.RaceUtils;
 import com.alibaba.middleware.race.StructUtils;
-import com.alibaba.middleware.race.TopologyUtils;
 import com.alibaba.middleware.race.model.OrderMessage;
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -12,9 +11,9 @@ import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
 
-public class TmallSortBolt implements IRichBolt{
-    private OutputCollector collector;
-    
+public class TmallSortBolt implements IRichBolt {
+	private OutputCollector collector;
+
 	@Override
 	public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
 		this.collector = collector;
@@ -22,11 +21,9 @@ public class TmallSortBolt implements IRichBolt{
 
 	@Override
 	public void execute(Tuple input) {
-		 if (input.getSourceStreamId().equals(TopologyUtils.TMALL_TOPIC_STREAM)) {
-		    	OrderMessage tmallOrder =RaceUtils.readKryoObject(OrderMessage.class, (byte[])input.getValue(0)); 
-				StructUtils.tmallCacheMap.put(tmallOrder.orderId, tmallOrder.totalPrice);
-		    }
-//		    collector.ack(input);
+		OrderMessage tmallOrder = RaceUtils.readKryoObject(OrderMessage.class, (byte[]) input.getValue(0));
+		StructUtils.tmallCacheMap.put(tmallOrder.orderId, tmallOrder.totalPrice);
+//		collector.ack(input);
 	}
 
 	@Override
