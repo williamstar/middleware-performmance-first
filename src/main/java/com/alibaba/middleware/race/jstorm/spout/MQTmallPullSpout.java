@@ -3,10 +3,8 @@ package com.alibaba.middleware.race.jstorm.spout;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.alibaba.jstorm.client.spout.IFailValueSpout;
 import com.alibaba.middleware.race.QueueOffsetCache;
 import com.alibaba.middleware.race.RaceConfig;
@@ -18,7 +16,6 @@ import com.alibaba.rocketmq.client.consumer.PullResult;
 import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.alibaba.rocketmq.common.message.MessageQueue;
-
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.IRichSpout;

@@ -12,7 +12,7 @@ public final class PullConsumer {
 	}
 	private PullConsumer(){
 		pullConsumer = new DefaultMQPullConsumer(RaceConfig.MetaConsumerGroup);
-		// pullConsumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
+//		 pullConsumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
 		try {
 			pullConsumer.start();
 		} catch (MQClientException e) {

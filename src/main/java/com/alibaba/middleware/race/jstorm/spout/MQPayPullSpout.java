@@ -40,6 +40,8 @@ public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 	@Override
 	public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
 		this.collector = collector;
+		new SupervisorThread().TimeWork(); // 控制线程
+		SupervisorThread.timeEmit(); // 定时提交
 		if (consumer == null) {
 			consumer = PullConsumer.getInstance().getConsumer();
 			try {
@@ -73,8 +75,8 @@ public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 	private void handleAndEmit() {
 		for (MessageQueue mq : mqs) {
 			try {
-				PullResult pullResult = consumer.pull(mq, null,
-						QueueOffsetCache.getMessageQueueOffset(mq), RaceConfig.PULLBATCHSIZE);
+				PullResult pullResult = consumer.pull(mq, null, QueueOffsetCache.getMessageQueueOffset(mq),
+						RaceConfig.PULLBATCHSIZE);
 				QueueOffsetCache.putMessageQueueOffset(mq, pullResult.getNextBeginOffset());
 				switch (pullResult.getPullStatus()) {
 				case FOUND:
@@ -83,7 +85,8 @@ public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 				case OFFSET_ILLEGAL:
 					throw new IllegalStateException("Illegal offset " + pullResult);
 				default:
-					//LOG.warn("Unconcerned status {} for result {} !", pullResult.getPullStatus(), pullResult);
+					// LOG.warn("Unconcerned status {} for result {} !",
+					// pullResult.getPullStatus(), pullResult);
 					break;
 				}
 			} catch (Exception e) {

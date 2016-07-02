@@ -25,9 +25,6 @@ public class RaceTopology {
 	
 		Config conf = new Config();
 		TopologyBuilder builder = new TopologyBuilder();
-		
-		new SupervisorThread().TimeWork();	//	控制线程
-        SupervisorThread.timeEmit();		//定时提交
         
         builder.setSpout("taoSpout", new MQTaoPullSpout(),1);
         builder.setSpout("tmallSpout", new MQTmallPullSpout(),1);
@@ -40,9 +37,9 @@ public class RaceTopology {
 		
 		String topologyName = RaceConfig.JstormTopologyName;
 		conf.setDebug(false);
-//        int ackerNum = JStormUtils.parseInt(
-//                conf.get(Config.TOPOLOGY_ACKER_EXECUTORS), 1);
-//        Config.setNumAckers(conf, ackerNum);
+       int ackerNum = JStormUtils.parseInt(
+               conf.get(Config.TOPOLOGY_ACKER_EXECUTORS), 1);
+       Config.setNumAckers(conf, ackerNum);
 		//本地调试模式
 		// LocalCluster cluster = new LocalCluster();
 		// conf.put(Config.TOPOLOGY_MAX_TASK_PARALLELISM, 1);
