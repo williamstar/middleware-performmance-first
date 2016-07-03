@@ -31,11 +31,11 @@ public class MQTaoPullSpout implements IRichSpout,IFailValueSpout{
 	private DefaultMQPullConsumer consumer;
 	private SpoutOutputCollector collector;
 	private Set<MessageQueue> mqs;//根据topic获取对应的MessageQueue
-	
 	@Override
 	public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
 		this.collector = collector;
 		if (consumer == null) {
+			TairImpl.start = System.currentTimeMillis();
 			consumer = PullConsumer.getInstance().getConsumer();
 			try {
 				mqs = consumer.fetchSubscribeMessageQueues(RaceConfig.MqTaobaoTradeTopic);

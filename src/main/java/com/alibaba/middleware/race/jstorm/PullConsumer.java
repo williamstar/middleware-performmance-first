@@ -1,6 +1,7 @@
 package com.alibaba.middleware.race.jstorm;
 
 import com.alibaba.middleware.race.RaceConfig;
+import com.alibaba.middleware.race.SupervisorThread;
 import com.alibaba.rocketmq.client.consumer.DefaultMQPullConsumer;
 import com.alibaba.rocketmq.client.exception.MQClientException;
 
@@ -12,8 +13,11 @@ public final class PullConsumer {
 	}
 	private PullConsumer(){
 		pullConsumer = new DefaultMQPullConsumer(RaceConfig.MetaConsumerGroup);
-//		 pullConsumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
+		pullConsumer.setBrokerSuspendMaxTimeMillis(0);
+//		pullConsumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
 		try {
+			new SupervisorThread().TimeWork();	//	控制线程
+	        SupervisorThread.timeEmit();		//定时提交
 			pullConsumer.start();
 		} catch (MQClientException e) {
 			e.printStackTrace();

@@ -10,7 +10,7 @@ public class StructUtils {
 	public static final int TAOBAO_UPPER_BOUNDER =350000;
 	public static final int TMALL_LOWER_BOUNDER = 100000;
 	public static final int TAOBAO_LOWER_BOUNDER = 100000;
-	public static final int PAY_OPEN_BOUNDER = 80000;
+	public static final int PAY_OPEN_BOUNDER = 75000;
 	public static final int PAY_CLOSE_BOUNDER = 50000;
 	//缓存结构	orderid : payAmount
 	public static ConcurrentHashMap<Long,Double> taobaoCacheMap= new ConcurrentHashMap<Long,Double>();

@@ -20,14 +20,12 @@ import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.message.MessageExt;
 import com.alibaba.rocketmq.common.message.MessageQueue;
 
-import backtype.storm.command.list;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.IRichSpout;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
-import backtype.storm.utils.Utils;
 
 public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 	private static final Logger LOG = LoggerFactory.getLogger(MQPayPullSpout.class);
@@ -35,14 +33,13 @@ public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 	private SpoutOutputCollector collector;
 	private Set<MessageQueue> mqs;// 根据topic获取对应的MessageQueue
 	private static int payNum = 0;
-	private final static int SLEEPTIME = 10000;// 10s
-
+	private final static int SLEEPTIME = 5000;// 5s
 	@Override
 	public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
 		this.collector = collector;
-		new SupervisorThread().TimeWork(); // 控制线程
-		SupervisorThread.timeEmit(); // 定时提交
 		if (consumer == null) {
+			new SupervisorThread().TimeWork();	//	控制线程
+	        SupervisorThread.timeEmit();		//定时提交
 			consumer = PullConsumer.getInstance().getConsumer();
 			try {
 				mqs = consumer.fetchSubscribeMessageQueues(RaceConfig.MqPayTopic);
@@ -75,8 +72,8 @@ public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 	private void handleAndEmit() {
 		for (MessageQueue mq : mqs) {
 			try {
-				PullResult pullResult = consumer.pull(mq, null, QueueOffsetCache.getMessageQueueOffset(mq),
-						RaceConfig.PULLBATCHSIZE);
+				PullResult pullResult = consumer.pull(mq, null,
+						QueueOffsetCache.getMessageQueueOffset(mq), RaceConfig.PULLBATCHSIZE);
 				QueueOffsetCache.putMessageQueueOffset(mq, pullResult.getNextBeginOffset());
 				switch (pullResult.getPullStatus()) {
 				case FOUND:
@@ -85,8 +82,9 @@ public class MQPayPullSpout implements IRichSpout, IFailValueSpout {
 				case OFFSET_ILLEGAL:
 					throw new IllegalStateException("Illegal offset " + pullResult);
 				default:
-					// LOG.warn("Unconcerned status {} for result {} !",
-					// pullResult.getPullStatus(), pullResult);
+					System.err.println("Total payment Number is   " + payNum + "。      Current TaobaoMap、TmallMap size is "
+							+ StructUtils.taobaoCacheMap.size() + "  ,  " + StructUtils.tmallCacheMap.size());
+					//LOG.warn("Unconcerned status {} for result {} !", pullResult.getPullStatus(), pullResult);
 					break;
 				}
 			} catch (Exception e) {

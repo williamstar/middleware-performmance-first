@@ -25,6 +25,7 @@ public class TairImpl {
 	public static double PCSUM = 0,MOBILESUM = 0;
 	public static File file;
 	public static int failTimes = 0;
+	public  static long start;
 	 static {
     	
     	// 创建config server列表
@@ -103,7 +104,7 @@ public class TairImpl {
        	try {
        		RandomAccessFile raf = new RandomAccessFile(file,"rw");
        		raf.seek(raf.length());
-       		raf.write((index+" -> key: "+RaceConfig.prex_taobao + millisTime+"  value: "+result+"\n").getBytes());
+       		raf.write(((System.currentTimeMillis()-start)+"ms   "+index+" -> key: "+RaceConfig.prex_taobao + millisTime+"  value: "+result+"\n").getBytes());
        		raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();

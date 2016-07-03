@@ -19,7 +19,7 @@ import backtype.storm.tuple.Tuple;
  */
 public class PaySortBolt implements IRichBolt {
 	private static Logger LOG = LoggerFactory.getLogger(PaySortBolt.class);
-	private static OutputCollector collector;
+	private OutputCollector collector;
 	private static int lastMinFlag = -1; // 上一分钟index
 
 	@Override

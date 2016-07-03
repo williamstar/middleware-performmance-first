@@ -5,13 +5,10 @@ import java.util.Map;
 
 import com.alibaba.rocketmq.common.message.MessageQueue;
 
-/**
- * @author Von Gosling
- */
 public class QueueOffsetCache {
-
+	
 	 private static final Map<MessageQueue, Long> offseTable = new HashMap<MessageQueue, Long>();
-
+	 
     public static void putMessageQueueOffset(MessageQueue mq, long offset) {
     	offseTable.put(mq, offset);
     }

@@ -1,5 +1,6 @@
 package com.alibaba.middleware.race.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Random;
 
 public class TableItemFactory {
