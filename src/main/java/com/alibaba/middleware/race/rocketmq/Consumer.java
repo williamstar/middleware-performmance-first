@@ -14,6 +14,7 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.alibaba.middleware.race.model.*;
 import com.alibaba.middleware.race.RaceUtils;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -28,6 +29,7 @@ public class Consumer {
 	private static int payTimes = 0;
 	private static int taobaoTimes = 0;
 	private static int tmallTimes = 0;
+	 static long  start = System.currentTimeMillis();
     public static void main(String[] args) throws InterruptedException, MQClientException {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(RaceConfig.MetaConsumerGroup);
         /**
@@ -36,8 +38,8 @@ public class Consumer {
          */
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         //在本地搭建好broker后,记得指定nameServer的地址
-        //consumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
-
+        consumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
+        System.err.println(new Date());
         consumer.subscribe(RaceConfig.MqTaobaoTradeTopic,"*");
         consumer.subscribe(RaceConfig.MqTmallTradeTopic, "*");
         consumer.subscribe(RaceConfig.MqPayTopic, "*");
@@ -50,22 +52,24 @@ public class Consumer {
                    byte [] body = msg.getBody();
                    if (body.length == 2 && body[0] == 0 && body[1] == 0) {
                        //Info: 生产者停止生成数据, 并不意味着马上结束
+                	   System.err.println(System.currentTimeMillis()-start+"*****************ms");
                        System.out.println("-----------------------Got the end signal------------------------------");
                        continue;
                    }
                    if(msg.getTopic().equals(RaceConfig.MqTaobaoTradeTopic)){
-                   	OrderMessage taobaoMessage = RaceUtils.readKryoObject(OrderMessage.class, body);
+                	   System.err.println(payTimes ++ );
+//                   	OrderMessage taobaoMessage = RaceUtils.readKryoObject(OrderMessage.class, body);
                    //	System.out.println(taobaoTimes ++ +":"+taobaoMessage);
                   	
                    }else if(msg.getTopic().equals(RaceConfig.MqTmallTradeTopic)){
-                      	OrderMessage tmallMessage = RaceUtils.readKryoObject(OrderMessage.class, body);
+//                      	OrderMessage tmallMessage = RaceUtils.readKryoObject(OrderMessage.class, body);
                       //	System.out.println(tmallTimes ++  + ":" + tmallMessage);
                     
                    }else if(msg.getTopic().equals(RaceConfig.MqPayTopic)){
-                	   System.err.println(payTimes ++ );
-                		PaymentMessage paymeng = RaceUtils.readKryoObject(PaymentMessage.class, body);
-                   }
-                   
+                	  
+//                		PaymentMessage paymeng = RaceUtils.readKryoObject(PaymentMessage.class, body);
+					}
+
                }
 			return ConsumeOrderlyStatus.SUCCESS;
 		}
