@@ -51,9 +51,9 @@ public class TairImpl {
 		wirteRatio(index, millisTime);
 		return true;
 	}
-//	public static void main(String[] args) {
-//		System.err.println(get("ratio_426291urel_1466430240"));
-//	}
+	public static void main(String[] args) {
+		System.err.println(get("ratio_426291urel_1466430240"));
+	}
 	/**
 	 * tair 写入
 	 * 

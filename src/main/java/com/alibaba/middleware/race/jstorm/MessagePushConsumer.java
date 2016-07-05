@@ -8,8 +8,7 @@ import com.alibaba.rocketmq.client.consumer.listener.MessageListener;
 
 public class MessagePushConsumer implements Serializable {
 
-	private static final long serialVersionUID = 2520609125571691745L;
-	private transient DefaultMQPushConsumer consumer;
+    private transient DefaultMQPushConsumer consumer;
 
     public void start(MessageListener listener) throws Exception {
         consumer = (DefaultMQPushConsumer) MessageConsumerManager.getConsumerInstance(listener);

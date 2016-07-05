@@ -24,8 +24,7 @@ import backtype.storm.tuple.Tuple;
  * PC/无线、淘宝/天猫的分类、提交通知
  */
 public class PaySortBolt implements IRichBolt, Serializable {
-	
-	private static final long serialVersionUID = 6255182584090294198L;
+	private static Logger LOG = LoggerFactory.getLogger(PaySortBolt.class);
 	private static boolean isStart = true;
 	private static boolean isOffer = false;
 	// 缓存结构 orderid : payAmount
@@ -173,7 +172,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 					submitFinalMsg();
 				}
 			}
-		},1150000l);
+		},1195000l);
 	}
 
 	@Override

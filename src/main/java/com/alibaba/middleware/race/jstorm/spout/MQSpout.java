@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.jstorm.client.spout.IFailValueSpout;
 import com.alibaba.middleware.race.RaceConfig;
 import com.alibaba.middleware.race.jstorm.MessagePushConsumer;
 import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -23,7 +24,7 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
 
-public class MQSpout implements IRichSpout, MessageListenerOrderly,Serializable {
+public class MQSpout implements IRichSpout, IFailValueSpout,MessageListenerOrderly,Serializable {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MQSpout.class);
 	private MessagePushConsumer consumer;
@@ -104,5 +105,11 @@ public class MQSpout implements IRichSpout, MessageListenerOrderly,Serializable 
 
 	@Override
 	public void deactivate() {
+	}
+
+	@Override
+	public void fail(Object msgId, List<Object> values) {
+		collector.emit(new Values(values.get(0)));
+		values.remove(0);
 	}
 }
