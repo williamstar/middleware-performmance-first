@@ -18,6 +18,8 @@ import backtype.storm.tuple.Values;
 
 public class SerializableBolt implements IBasicBolt,Serializable {
 	
+	private static final long serialVersionUID = 5254328388455387468L;
+
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer arg0) {
 		arg0.declare(new Fields("id","amount","flag"));

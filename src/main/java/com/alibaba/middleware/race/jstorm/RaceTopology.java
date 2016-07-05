@@ -22,7 +22,7 @@ public class RaceTopology {
 		TopologyBuilder builder = new TopologyBuilder();
 		
 		builder.setSpout("spout", new MQSpout(), 1);
-		builder.setBolt("SerializableBolt", new SerializableBolt(), 18).shuffleGrouping("spout");
+		builder.setBolt("SerializableBolt", new SerializableBolt(), 14).shuffleGrouping("spout");
 
 		builder.setBolt("paySortBolt", new PaySortBolt(),1).shuffleGrouping("SerializableBolt");
 

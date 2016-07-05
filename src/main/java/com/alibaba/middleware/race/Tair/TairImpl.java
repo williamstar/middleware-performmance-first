@@ -26,7 +26,7 @@ public class TairImpl {
 	private static Logger LOG = LoggerFactory.getLogger(TairImpl.class);
 	private static DefaultTairManager tairManager;
 	public static double PCSUM = 0, MOBILESUM = 0;
-	public static File file;
+//	public static File file;
 	public static int failTimes = 0;
 	public static long start;
 	static {
@@ -34,7 +34,7 @@ public class TairImpl {
 		// 创建config server列表
 		List<String> confServers = new ArrayList<String>();
 		confServers.add(RaceConfig.TairConfigServer);
-		// confServers.add(RaceConfig.TairSalveConfigServer);
+		 confServers.add(RaceConfig.TairSalveConfigServer);
 		// 创建客户端实例
 		tairManager = new DefaultTairManager();
 		tairManager.setConfigServerList(confServers);
@@ -42,7 +42,7 @@ public class TairImpl {
 		tairManager.setGroupName(RaceConfig.TairGroup);
 		// 初始化客户端
 		tairManager.init();
-		file = new File("/root/result.txt");
+//		file = new File("/root/result.txt");
 	}
 
 	public static boolean writeAll(int index, long millisTime) {
@@ -51,9 +51,9 @@ public class TairImpl {
 		wirteRatio(index, millisTime);
 		return true;
 	}
-	public static void main(String[] args) {
-		System.err.println(get("ratio_426291urel_1466430240"));
-	}
+//	public static void main(String[] args) {
+//		System.err.println(get("ratio_426291urel_1466430240"));
+//	}
 	/**
 	 * tair 写入
 	 * 
@@ -105,48 +105,48 @@ public class TairImpl {
 		PCSUM += PaySortBolt.PCDeal[index];
 		MOBILESUM += PaySortBolt.mobileDeal[index];
 		double result = MOBILESUM / PCSUM;
-		LOG.info((System.currentTimeMillis() - start) + "ms  " + index + "@@@@@@@@@@@@@@@@@@@" + RaceConfig.prex_ratio
-				+ millisTime + "----->" + result);
-		try {
-			RandomAccessFile raf = new RandomAccessFile(file, "rw");
-			raf.seek(raf.length());
-			raf.write(((System.currentTimeMillis() - start) + "ms  " + index + " -> key: " + RaceConfig.prex_ratio
-					+ millisTime + "  value: " + result + "\n").getBytes());
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		LOG.info((System.currentTimeMillis() - start) + "ms  " + index + "@@@@@@@@@@@@@@@@@@@" + RaceConfig.prex_ratio
+//				+ millisTime + "----->" + result);
+//		try {
+//			RandomAccessFile raf = new RandomAccessFile(file, "rw");
+//			raf.seek(raf.length());
+//			raf.write(((System.currentTimeMillis() - start) + "ms  " + index + " -> key: " + RaceConfig.prex_ratio
+//					+ millisTime + "  value: " + result + "\n").getBytes());
+//			raf.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		return write(RaceConfig.prex_ratio + millisTime, result);
 	}
 
 	private static boolean writeTaobao(int index, long millisTime) {
 
 		double result = PaySortBolt.taobaoDeal[index];
-		LOG.info(index + "@@@@@@@@@@@@@@@@@@@" + RaceConfig.prex_taobao + millisTime + "----->" + result);
-		try {
-			RandomAccessFile raf = new RandomAccessFile(file, "rw");
-			raf.seek(raf.length());
-			raf.write((index + " -> key: " + RaceConfig.prex_taobao + millisTime + "  value: " + result + "\n")
-					.getBytes());
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		LOG.info(index + "@@@@@@@@@@@@@@@@@@@" + RaceConfig.prex_taobao + millisTime + "----->" + result);
+//		try {
+//			RandomAccessFile raf = new RandomAccessFile(file, "rw");
+//			raf.seek(raf.length());
+//			raf.write((index + " -> key: " + RaceConfig.prex_taobao + millisTime + "  value: " + result + "\n")
+//					.getBytes());
+//			raf.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		return write(RaceConfig.prex_taobao + millisTime, result);
 	}
 
 	private static boolean writeTmall(int index, long millisTime) {
 		double result = PaySortBolt.tmallDeal[index];
-		LOG.info(index + "@@@@@@@@@@@@@@@@@@@" + RaceConfig.prex_tmall + millisTime + "----->" + result);
-		try {
-			RandomAccessFile raf = new RandomAccessFile(file, "rw");
-			raf.seek(raf.length());
-			raf.write((index + " -> key: " + RaceConfig.prex_tmall + millisTime + "  value: " + result + "\n")
-					.getBytes());
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		LOG.info(index + "@@@@@@@@@@@@@@@@@@@" + RaceConfig.prex_tmall + millisTime + "----->" + result);
+//		try {
+//			RandomAccessFile raf = new RandomAccessFile(file, "rw");
+//			raf.seek(raf.length());
+//			raf.write((index + " -> key: " + RaceConfig.prex_tmall + millisTime + "  value: " + result + "\n")
+//					.getBytes());
+//			raf.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		return write(RaceConfig.prex_tmall + millisTime, result);
 	}
 

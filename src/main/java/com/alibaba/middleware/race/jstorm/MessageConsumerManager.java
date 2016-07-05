@@ -14,7 +14,7 @@ public class MessageConsumerManager {
 	    	
             DefaultMQPushConsumer pushConsumer = new DefaultMQPushConsumer(RaceConfig.MetaConsumerGroup);
             //在本地搭建好broker后,记得指定nameServer的地址
-            pushConsumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
+//          pushConsumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
             pushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
             //顺序消费
             pushConsumer.subscribe(RaceConfig.MqTaobaoTradeTopic, "*");
