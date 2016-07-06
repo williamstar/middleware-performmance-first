@@ -20,5 +20,5 @@ public class RaceConfig {
     public static Integer TairNamespace = 63828;//63828
     
     //在本地搭建好broker后,记得指定nameServer的地址
-    public static String NamesrvAddr = "192.168.199.26:9876";
+//    public static String NamesrvAddr = "192.168.199.26:9876";
 }

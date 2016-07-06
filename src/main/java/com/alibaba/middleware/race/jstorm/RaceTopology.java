@@ -23,15 +23,15 @@ public class RaceTopology {
 		TopologyBuilder builder = new TopologyBuilder();
 		
 		builder.setSpout("spout", new MQSpout(), 1);
-		builder.setBolt("SerializableBolt", new SerializableBolt(), 18).shuffleGrouping("spout");
+		builder.setBolt("SerializableBolt", new SerializableBolt(), 14).shuffleGrouping("spout");
 
 		builder.setBolt("paySortBolt", new PaySortBolt(),1).shuffleGrouping("SerializableBolt");
 
 		String topologyName = RaceConfig.JstormTopologyName;
 		conf.setDebug(false);
-		 int ackerNum = JStormUtils.parseInt(
-		 conf.get(Config.TOPOLOGY_ACKER_EXECUTORS), 2);
-		 Config.setNumAckers(conf, ackerNum);
+//		 int ackerNum = JStormUtils.parseInt(
+//		 conf.get(Config.TOPOLOGY_ACKER_EXECUTORS), 1);
+//		 Config.setNumAckers(conf, ackerNum);
 		// 本地调试模式
 //		LocalCluster cluster = new LocalCluster();
 //		conf.put(Config.TOPOLOGY_MAX_TASK_PARALLELISM, 1);

@@ -38,7 +38,7 @@ public class Consumer {
          */
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         //在本地搭建好broker后,记得指定nameServer的地址
-        consumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
+//        consumer.setNamesrvAddr(RaceConfig.NamesrvAddr);
         System.err.println(new Date());
         consumer.subscribe(RaceConfig.MqTaobaoTradeTopic,"*");
         consumer.subscribe(RaceConfig.MqTmallTradeTopic, "*");

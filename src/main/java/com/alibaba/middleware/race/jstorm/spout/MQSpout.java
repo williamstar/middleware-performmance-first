@@ -79,7 +79,7 @@ public class MQSpout implements IRichSpout, IFailValueSpout,MessageListenerOrder
 				// 生产者停止生成数据, 并不意味着马上结束
 				endTime++;
 				if (endTime == 3) { // 当pay消费到最后时
-					Utils.sleep(5000);
+//					Utils.sleep(5000);
 					collector.emit(new Values(null,-1));
 				}
 				continue;

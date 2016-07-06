@@ -59,6 +59,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 			} else {
 				mobileDeal[index] += payment.payAmount;
 			}
+			
 			if (taobaoCacheMap.containsKey(payment.orderId)) {
 				taobaoDeal[index] += payment.payAmount;
 				// 更新订单总金额,如果全消费完则删除订单
@@ -124,9 +125,9 @@ public class PaySortBolt implements IRichBolt, Serializable {
 				tmallCacheMap.put(id, amount);
 			}
 		} else if (flag == -1) {
-			// end
-			isOffer = true;
-			submitFinalMsg();
+//			// end
+//			isOffer = true;
+//			submitFinalMsg();
 		}
 
 	}
@@ -172,7 +173,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 					submitFinalMsg();
 				}
 			}
-		},1195000l);
+		},1080000);
 	}
 
 	@Override
