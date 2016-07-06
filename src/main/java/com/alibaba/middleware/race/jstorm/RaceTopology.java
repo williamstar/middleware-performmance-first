@@ -38,7 +38,7 @@ public class RaceTopology {
 //		cluster.submitTopology(topologyName, conf, builder.createTopology());
 		// 集群模式
 		conf.put(Config.STORM_CLUSTER_MODE, "distributed");
-		conf.setNumWorkers(3);
+		conf.setNumWorkers(4);
 		StormSubmitter.submitTopology(topologyName, conf, builder.createTopology());
 //		LOG.info("#################拓扑提交成功！###################");
 	}
