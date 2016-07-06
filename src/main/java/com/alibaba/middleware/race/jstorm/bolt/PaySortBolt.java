@@ -19,6 +19,7 @@ import backtype.storm.task.TopologyContext;
 import backtype.storm.topology.IRichBolt;
 import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.tuple.Tuple;
+import backtype.storm.utils.Utils;
 
 /**
  * PC/无线、淘宝/天猫的分类、提交通知
@@ -26,7 +27,8 @@ import backtype.storm.tuple.Tuple;
 public class PaySortBolt implements IRichBolt, Serializable {
 	private static Logger LOG = LoggerFactory.getLogger(PaySortBolt.class);
 	private static boolean isStart = true;
-	private static boolean isOffer = false;
+	public static int init = 0;
+	public static boolean isOffer = false;
 	// 缓存结构 orderid : payAmount
 	public static HashMap<Long, Double> taobaoCacheMap = new HashMap<>(300000);
 	public static HashMap<Long, Double> tmallCacheMap = new HashMap<>(300000);
@@ -48,10 +50,19 @@ public class PaySortBolt implements IRichBolt, Serializable {
 			PaymentMessage payment = (PaymentMessage) input.getValue(0);
 			int index = (int) input.getValue(1);
 			long minuteTime = (payment.createTime / 1000 / 60) * 60;
-			if (isStart == true) {
-				taobaoDeal[1440] = index;
-				isStart = false;
+			//get init index
+			if(init < 50){
+				if (isStart == true) {
+					taobaoDeal[1440] = index;
+					isStart = false;
+				}
+				if(index<taobaoDeal[1440]){
+					taobaoDeal[1440] = index;
+				}
+				init++;
 			}
+			
+			
 			timeStamp[index] = minuteTime;// 下标-10位时间戳映射
 			// 0 PC、1 无线
 			if (payment.payPlatform == 0) {
@@ -65,7 +76,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 				// 更新订单总金额,如果全消费完则删除订单
 				double sub = taobaoCacheMap.get(payment.orderId) - payment.payAmount;
 				taobaoCacheMap.put(payment.orderId, sub);
-				if (sub < 0.01) {
+				if (sub < 0.001) {
 					taobaoCacheMap.remove(payment.orderId);
 				}
 			} else if (tmallCacheMap.containsKey(payment.orderId)) {
@@ -73,7 +84,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 				// 更新订单总金额,如果全消费完则删除订单
 				double sub = tmallCacheMap.get(payment.orderId) - payment.payAmount;
 				tmallCacheMap.put(payment.orderId, sub);
-				if (sub < 0.01) {
+				if (sub < 0.001) {
 					tmallCacheMap.remove(payment.orderId);
 				}
 			} else {
@@ -87,8 +98,6 @@ public class PaySortBolt implements IRichBolt, Serializable {
 					cacheList.add(new SimplePay(payment.payAmount, index));
 				}
 
-//				System.err.println("      Current TaobaoMap、TmallMap size is " + taobaoCacheMap.size() + "  ,  "
-//						+ tmallCacheMap.size() + "	===========pay is faster than order	!!!============");
 			}
 		} else if (flag == 0) {
 			// taobao
@@ -100,7 +109,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 					taobaoDeal[pay.index] += pay.payAmount;
 					amount -= pay.payAmount;
 				}
-				if (amount > 0.01) {
+				if (amount > 0.001) {
 					taobaoCacheMap.put(id, amount);
 				}
 				payCacheMap.remove(id);
@@ -117,7 +126,7 @@ public class PaySortBolt implements IRichBolt, Serializable {
 					tmallDeal[pay.index] += pay.payAmount;
 					amount -= pay.payAmount;
 				}
-				if (amount > 0.01) {
+				if (amount > 0.001) {
 					tmallCacheMap.put(id, amount);
 				}
 				payCacheMap.remove(id);
@@ -125,26 +134,29 @@ public class PaySortBolt implements IRichBolt, Serializable {
 				tmallCacheMap.put(id, amount);
 			}
 		} else if (flag == -1) {
-//			// end
-//			isOffer = true;
-//			submitFinalMsg();
+			// end
+			new Thread(){
+				public void run() {
+					Utils.sleep(6000);
+					submitFinalMsg();
+					isOffer = true;
+				};
+			}.start();
+			
 		}
 
 	}
 
 	// 提交全部统计结果
 	public static void submitFinalMsg() {
-//		LOG.info("END~~~~~~      Current TaobaoMap、TmallMap size is " + taobaoCacheMap.size() + "  ,  "
-//				+ tmallCacheMap.size());
-
 		TairImpl.PCSUM = TairImpl.MOBILESUM = 0d;
 		for (int i = (int) taobaoDeal[1440]; i < 1440; i++) {
-			if (taobaoDeal[i] != 0d) {
+			if (taobaoDeal[i] != 0d || tmallDeal[i] != 0d || PCDeal[i]!=0d || mobileDeal[i]!=0d) {
 				TairImpl.writeAll(i, timeStamp[i]);
 			}
 		}
 		for (int i = 0; i < (int) taobaoDeal[1440]; i++) {
-			if (taobaoDeal[i] != 0d) {
+			if (taobaoDeal[i] != 0d || tmallDeal[i] != 0d || PCDeal[i]!=0d || mobileDeal[i]!=0d) {
 				TairImpl.writeAll(i, timeStamp[i]);
 			}
 		}
@@ -164,22 +176,21 @@ public class PaySortBolt implements IRichBolt, Serializable {
 		return null;
 	}
 
-	// 19:55 emit 
+	// 18 emit 960000l
 	public static void timeEmit() {
 		new Timer().schedule(new TimerTask() {
 			@Override
 			public void run() {
-				if(isOffer = false){
+				if(isOffer == false){
 					submitFinalMsg();
 				}
 			}
-		},1080000);
+		},960000l);
 	}
 
 	@Override
 	public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {
-		TairImpl.start = System.currentTimeMillis();
+//		TairImpl.start = System.currentTimeMillis();
 		timeEmit();
 	}
-
 }

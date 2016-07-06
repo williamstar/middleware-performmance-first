@@ -30,7 +30,7 @@ public class RaceTopology {
 		String topologyName = RaceConfig.JstormTopologyName;
 		conf.setDebug(false);
 //		 int ackerNum = JStormUtils.parseInt(
-//		 conf.get(Config.TOPOLOGY_ACKER_EXECUTORS), 1);
+//		 conf.get(Config.TOPOLOGY_ACKER_EXECUTORS), 2);
 //		 Config.setNumAckers(conf, ackerNum);
 		// 本地调试模式
 //		LocalCluster cluster = new LocalCluster();
@@ -40,6 +40,6 @@ public class RaceTopology {
 		conf.put(Config.STORM_CLUSTER_MODE, "distributed");
 		conf.setNumWorkers(3);
 		StormSubmitter.submitTopology(topologyName, conf, builder.createTopology());
-		LOG.info("#################拓扑提交成功！###################");
+//		LOG.info("#################拓扑提交成功！###################");
 	}
 }
